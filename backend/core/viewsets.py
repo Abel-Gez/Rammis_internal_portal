@@ -1,0 +1,84 @@
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from core.mixins import VisibilityQuerysetMixin
+from rbac.permissions import HasModulePermission
+from audit_logs.utils import log_action
+
+
+class BaseContentViewSet(VisibilityQuerysetMixin, viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, HasModulePermission]
+
+    module_name = None  # must be defined in child class
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(archived=False)
+        return self.filter_by_visibility(queryset)
+
+    def perform_create(self, serializer):
+        from access_control.models import VisibilityLevel
+
+        public = VisibilityLevel.objects.filter(name="Public").first()
+
+        instance = serializer.save(
+            created_by=self.request.user,
+            visibility_level=serializer.validated_data.get("visibility_level", public),
+            department=serializer.validated_data.get("department", None),
+        )
+
+        log_action(
+            user=self.request.user,
+            module_name=self.module_name,
+            object_id=instance.id,
+            action="create"
+        )
+
+    def perform_destroy(self, instance):
+        instance.archived = True
+        instance.save()
+
+        log_action(
+            user=self.request.user,
+            module_name=self.module_name,
+            object_id=instance.id,
+            action="delete"
+        )
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+        log_action(
+            user=self.request.user,
+            module_name=self.module_name,
+            object_id=instance.id,
+            action="update"
+        )
+        
+    def retrieve(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+
+        log_action(
+            user=request.user,
+            module_name=self.module_name,
+            object_id=kwargs.get("pk"),
+            action="view"
+        )
+
+        return response
+
+    def get_permissions(self):
+        if not self.module_name:
+            raise ValueError("module_name must be defined in the ViewSet")
+
+        if self.action in ["list", "retrieve"]:
+            self.required_permission = f"{self.module_name}.view"
+
+        elif self.action == "create":
+            self.required_permission = f"{self.module_name}.create"
+
+        elif self.action in ["update", "partial_update"]:
+            self.required_permission = f"{self.module_name}.update"
+
+        elif self.action == "destroy":
+            self.required_permission = f"{self.module_name}.delete"
+
+        return [permission() for permission in self.permission_classes]
