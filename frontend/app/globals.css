@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* Brand colors (adjust to your real values) */
+:root {
+  --background: #f5f7fb;
+  --foreground: #0f172a;
+  --rammis-blue: #1D437F;
+  --rammis-light-blue: #4693C9;
+  --rammis-gold: #635E28;
+  --rammis-red: #9F2E41;
+  --rammis-grey: #AAABAB;
+  --sidebar-bg: #1D437F;
+  --card-bg: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-rammisBlue: var(--rammis-blue);
+  --color-rammisLightBlue: var(--rammis-light-blue);
+  --color-rammisGold: var(--rammis-gold);
+  --color-rammisRed: var(--rammis-red);
+  --color-rammisGrey: var(--rammis-grey);
+  --color-sidebarBg: var(--sidebar-bg);
+  --color-cardBg: var(--card-bg);
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #020617;
+    --foreground: #e5e7eb;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
