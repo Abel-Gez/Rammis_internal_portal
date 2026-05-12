@@ -8,6 +8,7 @@ from audit_logs.utils import log_action
 
 from .models import News
 from .serializers import NewsSerializer
+from rest_framework.permissions import AllowAny
 from core.viewsets import BaseContentViewSet
 
 
@@ -27,6 +28,11 @@ class NewsViewSet(BaseContentViewSet):
     search_fields = ["title", "content"]
     ordering_fields = ["published_date", "created_at"]
     ordering = ["-published_date"]
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve"]:
+            return [AllowAny()]
+        return super().get_permissions()
 
     def get_queryset(self):
         queryset = super().get_queryset()

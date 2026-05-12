@@ -44,7 +44,15 @@ class BaseContentViewSet(VisibilityQuerysetMixin, viewsets.ModelViewSet):
         )
 
     def perform_update(self, serializer):
-        instance = serializer.save()
+        # Pass visibility_level and department explicitly so custom serializer
+        # update() methods don't have to rediscover them from validated_data.
+        save_kwargs = {}
+        if "visibility_level" in serializer.validated_data:
+            save_kwargs["visibility_level"] = serializer.validated_data["visibility_level"]
+        if "department" in serializer.validated_data:
+            save_kwargs["department"] = serializer.validated_data["department"]
+
+        instance = serializer.save(**save_kwargs)
 
         log_action(
             user=self.request.user,

@@ -6,7 +6,7 @@ from .models import Vacancy, EmploymentType
 from .serializers import VacancySerializer, EmploymentTypeSerializer
 
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import serializers
 
 
@@ -47,6 +47,11 @@ class VacancyViewSet(BaseContentViewSet):
     ]
 
     ordering = ["-created_at"]
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve"]:
+            return [AllowAny()]
+        return super().get_permissions()
 
 class EmploymentTypeViewSet(viewsets.ModelViewSet):
     queryset = EmploymentType.objects.all()

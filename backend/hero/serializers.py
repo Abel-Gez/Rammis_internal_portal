@@ -20,10 +20,13 @@ class HeroSlideSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        instance.title = validated_data.get("title", instance.title)
-        instance.subtitle = validated_data.get("subtitle", instance.subtitle)
-        instance.image = validated_data.get("image", instance.image)
-        instance.is_active = validated_data.get("is_active", instance.is_active)
-        instance.order = validated_data.get("order", instance.order)
+        instance.title           = validated_data.get("title",            instance.title)
+        instance.subtitle        = validated_data.get("subtitle",         instance.subtitle)
+        instance.image           = validated_data.get("image",            instance.image)
+        instance.is_active       = validated_data.get("is_active",        instance.is_active)
+        instance.order           = validated_data.get("order",            instance.order)
+        # visibility_level and department were previously missing — both are now updated
+        instance.visibility_level = validated_data.get("visibility_level", instance.visibility_level)
+        instance.department       = validated_data.get("department",       instance.department)
         instance.save()
         return instance
