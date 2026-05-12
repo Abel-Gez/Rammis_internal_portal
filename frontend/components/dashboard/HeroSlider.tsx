@@ -1,104 +1,133 @@
 "use client";
 
-import { getHeroSlides } from "@/services/hero";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 
-export default function HeroSlider() {
+export default function HeroSlider({ slides }: { slides: any[] }) {
   const [current, setCurrent] = useState(0);
-  const [slides, setSlides] = useState<any[]>([]);
+  const [paused, setPaused] = useState(false);
+
+  const count = slides.length;
+
+  const next = useCallback(() => setCurrent((p) => (p + 1) % count), [count]);
+  const prev = useCallback(() => setCurrent((p) => (p - 1 + count) % count), [count]);
 
   useEffect(() => {
-    const fetchSlides = async () => {
-      try {
-        const data = await getHeroSlides();
-
-        const list = Array.isArray(data) ? data : data.results || [];
-
-        setSlides(list);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchSlides();
-  }, []);
-
-  useEffect(() => {
-    const id = setInterval(
-      () => setCurrent((prev) => (prev + 1) % slides.length),
-      7000,
-    );
+    if (paused || count < 2) return;
+    const id = setInterval(next, 6000);
     return () => clearInterval(id);
-  }, []);
+  }, [paused, next, count]);
 
   const today = new Date().toLocaleDateString(undefined, {
     weekday: "long",
-    month: "short",
+    month: "long",
     day: "numeric",
+    year: "numeric",
   });
 
+  if (count === 0) {
+    return (
+      <div className="relative w-full overflow-hidden rounded-2xl h-72 lg:h-96 bg-gradient-to-br from-[#1D437F] to-[#4693C9] flex items-center justify-center">
+        <div className="text-center text-white/60">
+          <p className="text-sm">No slides configured</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="relative w-full lg:flex-1 overflow-hidden rounded-3xl border border-slate-200/50 h-64 lg:h-80 shadow-2xl">
-      {/* Image container - always full width */}
+    <div
+      className="relative w-full overflow-hidden rounded-2xl h-72 lg:h-96 shadow-2xl group"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* Brand accent bar */}
+      <div className="absolute inset-x-0 top-0 h-1 z-20 bg-gradient-to-r from-[#1D437F] via-[#4693C9] to-[#635E28]" />
+
+      {/* Slides track */}
       <div
-        className="absolute inset-0 flex h-full w-full transition-transform duration-700 ease-out"
-        style={{
-          transform: `translateX(-${current * 100}%)`,
-        }}
+        className="absolute inset-0 flex h-full transition-transform duration-700 ease-[cubic-bezier(.4,0,.2,1)]"
+        style={{ transform: `translateX(-${current * 100}%)` }}
       >
-        {slides.map((slide) => (
+        {slides.map((slide, i) => (
           <div
-            key={slide.src}
-            className="relative flex h-full w-full flex-shrink-0"
+            key={slide.id ?? i}
+            className="relative flex h-full w-full shrink-0"
             style={{
-              backgroundImage: `url('${slide.src}')`,
+              backgroundImage: slide.image ? `url(${slide.image})` : slide.src ? `url(${slide.src})` : undefined,
               backgroundSize: "cover",
-              backgroundPosition: "center center",
-              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              backgroundColor: slide.image || slide.src ? undefined : "#1D437F",
             }}
           >
-            {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 via-slate-900/40 to-slate-900/60" />
+            {/* Layered gradient */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a1f3f]/85 via-[#1D437F]/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
             {/* Content */}
-            <div className="relative z-10 flex h-full flex-col justify-between p-6 sm:p-8">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-rammisGold/90">
-                  Internal Portal
-                </p>
-                <h1 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-white">
+            <div className="relative z-10 flex h-full flex-col justify-end p-7 sm:p-10">
+              <div className="max-w-xl animate-fadeIn">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#4693C9]/40 bg-[#4693C9]/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#93c5fd] mb-3 backdrop-blur-sm">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#4693C9] animate-pulse" />
+                  Rammis Internal Portal
+                </span>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight drop-shadow-lg">
                   {slide.title}
                 </h1>
-                <p className="mt-2 max-w-sm sm:max-w-xl text-sm lg:text-base text-slate-100/90">
-                  {slide.subtitle}
-                </p>
+                {slide.subtitle && (
+                  <p className="mt-2 text-sm lg:text-base text-slate-200/85 leading-relaxed line-clamp-2">
+                    {slide.subtitle}
+                  </p>
+                )}
+                <div className="mt-4 flex items-center gap-1.5 text-xs text-slate-300/70">
+                  <Calendar size={11} />
+                  <span>{today}</span>
+                </div>
               </div>
-              <p className="text-xs text-slate-300/90">Today • {today}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Brand accent bar */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-rammisBlue via-rammisLightBlue to-rammisGold" />
+      {/* Prev / Next arrows */}
+      {count > 1 && (
+        <>
+          <button
+            onClick={prev}
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/50"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            onClick={next}
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/50"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </>
+      )}
 
-      {/* Dots navigation */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-        {slides.map((_, index) => {
-          const isActive = index === current;
-          return (
+      {/* Dots */}
+      {count > 1 && (
+        <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-1.5">
+          {slides.map((_, i) => (
             <button
-              key={index}
-              type="button"
-              onClick={() => setCurrent(index)}
-              className={`
-                h-1.5 rounded-full transition-all
-                ${isActive ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}
-              `}
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`rounded-full transition-all duration-300 ${
+                i === current ? "w-6 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/40 hover:bg-white/70"
+              }`}
             />
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
+
+      {/* Slide counter */}
+      {count > 1 && (
+        <div className="absolute top-5 right-5 z-20 rounded-full bg-black/25 px-2.5 py-1 text-[10px] font-medium text-white/80 backdrop-blur-sm border border-white/10">
+          {current + 1} / {count}
+        </div>
+      )}
     </div>
   );
 }
