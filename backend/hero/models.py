@@ -13,5 +13,13 @@ class HeroSlide(BaseContent):
     class Meta:
         ordering = ["order", "-created_at"]
 
+    def save(self, *args, **kwargs):
+        if self.order == 0:
+            last = HeroSlide.objects.order_by("-order").first()
+            self.order = (last.order + 1) if last else 1
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.title
+

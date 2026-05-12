@@ -13,19 +13,22 @@ class BaseContent(models.Model):
     department = models.ForeignKey(
         Department,
         on_delete=models.SET_NULL,
-        null=True
+        null=True,
+        blank=True
     )
     
     visibility_level = models.ForeignKey(
         VisibilityLevel,
         on_delete=models.PROTECT,
-        null=True
+        null=True,
+        blank=True
     )
     
     created_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         related_name="%(class)s_created"
     )  
     

@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "dashboard",
     "search",
     "quick_links",
+    "hero",
 
 ]
 
@@ -121,7 +122,7 @@ DATABASES = {
         "USER": "p_user",
         "PASSWORD": "rmsportal@678",
         "HOST": "localhost",
-        "PORT": "5432",
+        "PORT": "5433",
     }
 }
 
