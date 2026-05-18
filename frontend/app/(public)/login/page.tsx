@@ -35,12 +35,13 @@ export default function LoginPage() {
       {/* ── Left branding panel (desktop only) ── */}
       <div className="relative hidden lg:flex lg:w-1/2 flex-col justify-between bg-gradient-to-br from-[#0a1f3f] via-[#1D437F] to-[#4693C9] p-12 overflow-hidden">
 
-        {/* Dot-grid overlay */}
+        {/* Step 4: Islamic geometric pattern replacing the plain dot-grid */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 pattern-dark"
           style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-            backgroundSize: "36px 36px",
+            maskImage: "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 50%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 50%)",
           }}
         />
         {/* Ambient orbs */}
@@ -49,12 +50,8 @@ export default function LoginPage() {
 
         {/* Logo */}
         <div className="relative flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-lg">
-            <Building2 size={20} className="text-[#1D437F]" />
-          </div>
-          <div>
-            <p className="text-base font-bold text-white leading-none">Rammis Bank</p>
-            <p className="text-[10px] text-white/40 tracking-widest uppercase">Internal Portal</p>
+          <div className="h-12 w-auto overflow-hidden rounded-xl bg-white/95 shadow-lg">
+            <img src="/logo.png" alt="Rammis Bank" className="h-full w-auto object-contain" />
           </div>
         </div>
 
@@ -102,13 +99,9 @@ export default function LoginPage() {
         </div>
 
         {/* Mobile logo */}
-        <div className="mb-8 flex items-center gap-3 lg:hidden">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white shadow-lg">
-            <Building2 size={18} className="text-[#1D437F]" />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-white leading-none">Rammis Bank</p>
-            <p className="text-[10px] text-white/35 tracking-widest uppercase">Internal Portal</p>
+        <div className="mb-8 flex items-center justify-center lg:hidden">
+          <div className="h-10 w-auto overflow-hidden rounded-xl bg-white/95 shadow-lg">
+            <img src="/logo.png" alt="Rammis Bank" className="h-full w-auto object-contain" />
           </div>
         </div>
 

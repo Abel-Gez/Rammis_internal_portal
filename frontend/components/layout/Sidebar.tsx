@@ -37,20 +37,9 @@ export default function Sidebar() {
       <div className="pointer-events-none absolute -top-16 -left-16 h-48 w-48 rounded-full bg-white/5 blur-3xl" />
       <div className="pointer-events-none absolute bottom-24 -right-10 h-40 w-40 rounded-full bg-[#4693C9]/20 blur-3xl" />
 
-      {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-5 border-b border-white/10">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-md">
-          <Building2 size={20} className="text-[#1D437F]" />
-        </div>
-        <div>
-          <p className="text-sm font-bold tracking-wide text-white leading-tight">Rammis Bank</p>
-          <p className="text-[10px] text-blue-200/70 tracking-widest uppercase">Internal Portal</p>
-        </div>
-      </div>
-
-      {/* Logo image slot (if /logo.png exists) */}
-      <div className="mx-4 mt-3 hidden">
-        <div className="h-10 w-full overflow-hidden rounded-xl bg-white/95 shadow-sm">
+      {/* Logo image */}
+      <div className="mx-4 mt-4">
+        <div className="h-12 w-full overflow-hidden rounded-xl bg-white/95 shadow-sm">
           <img src="/logo.png" alt="Rammis Bank" className="h-full w-full object-contain" />
         </div>
       </div>
@@ -107,13 +96,13 @@ export default function Sidebar() {
             <p className="truncate text-xs font-semibold text-white">
               {user?.username || "Rammis User"}
             </p>
-            <p className="text-[10px] text-blue-300/70 capitalize">
+            <p className="text-[10px] text-white capitalize">
               {user?.role || "Staff Portal"}
             </p>
           </div>
           <div className="h-2 w-2 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" title="Online" />
         </div>
-        <p className="mt-2 text-[10px] text-blue-300/40 text-center">
+        <p className="mt-2 text-[10px] text-white text-center">
           © {new Date().getFullYear()} Rammis Bank
         </p>
       </div>

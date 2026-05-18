@@ -64,7 +64,7 @@ function FullScreenSlider({ slides }: { slides: any[] }) {
         <div className="text-center space-y-4 animate-fadeIn">
           <Building2 size={64} className="mx-auto text-white/30" />
           <p className="text-white/40 tracking-widest uppercase text-sm">Rammis Bank Internal Portal</p>
-        </div>
+        </div>4
       </div>
     );
   }
@@ -97,46 +97,64 @@ function FullScreenSlider({ slides }: { slides: any[] }) {
       {/* Accent bar top */}
       <div className="absolute inset-x-0 top-0 h-[3px] z-20 bg-gradient-to-r from-[#1D437F] via-[#4693C9] to-[#635E28]" />
 
-      {/* Centered slide content */}
-      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center">
-        {slides.map((s, i) => (
-          <div key={s.id ?? i}
-            className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center transition-all duration-700"
-            style={{ opacity: i === current ? 1 : 0, transform: i === current ? "translateY(0)" : "translateY(12px)", pointerEvents: i === current ? "auto" : "none" }}>
-
+      {/* Bottom centered slide content */}
+    <div className="absolute inset-x-0 bottom-32 z-10 px-6">
+      {slides.map((s, i) => (
+        <div
+          key={s.id ?? i}
+          className="transition-all duration-700"
+          style={{
+            opacity: i === current ? 1 : 0,
+            transform:
+              i === current
+                ? "translateY(0)"
+                : "translateY(20px)",
+            pointerEvents: i === current ? "auto" : "none",
+            position: i === current ? "relative" : "absolute",
+            inset: 0,
+          }}
+        >
+          <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
             {/* Tag */}
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/8 px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.25em] text-white/70 backdrop-blur-sm mb-6">
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/8 px-5 py-1.5 text-[11px] font-bold uppercase tracking-[0.25em] text-white/70 backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-[#4693C9] animate-pulse" />
               Rammis Bank · Public Notice
             </span>
 
             {/* Main title */}
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.05] tracking-tight max-w-4xl drop-shadow-2xl">
+            <h1 className="max-w-4xl text-4xl font-black leading-[1.05] tracking-tight text-white drop-shadow-2xl sm:text-6xl lg:text-7xl">
               {s.title}
             </h1>
 
             {/* Subtitle */}
             {s.subtitle && (
-              <p className="mt-6 text-base sm:text-lg text-white/60 max-w-2xl leading-relaxed font-light">
+              <p className="mt-6 max-w-2xl text-base font-light leading-relaxed text-white/60 sm:text-lg">
                 {s.subtitle}
               </p>
             )}
 
             {/* CTA */}
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Link href="/login"
-                className="flex items-center gap-2.5 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-[#1D437F] shadow-2xl transition hover:bg-[#4693C9] hover:text-white hover:scale-105">
+              <Link
+                href="/login"
+                className="flex items-center gap-2.5 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-[#1D437F] shadow-2xl transition hover:scale-105 hover:bg-[#4693C9] hover:text-white"
+              >
                 Staff Login <ArrowRight size={15} />
               </Link>
-              <button onClick={scrollDown}
-                className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-medium text-white/70 backdrop-blur-sm transition hover:bg-white/12 hover:text-white">
+
+              <button
+                onClick={scrollDown}
+                className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 text-sm font-medium text-white/70 backdrop-blur-sm transition hover:bg-white/12 hover:text-white"
+              >
                 Explore News <ArrowDown size={14} />
               </button>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
+    </div>
 
+    
       {/* Prev / Next arrows */}
       {count > 1 && (
         <>
@@ -181,7 +199,7 @@ function FullScreenSlider({ slides }: { slides: any[] }) {
 // ── News card ─────────────────────────────────────────────────────────────
 function NewsCard({ item, onView }: { item: any; onView: (n: any) => void }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/[0.04] transition duration-300 hover:border-[#4693C9]/30 hover:bg-white/8 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/30">
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1b2e] transition duration-300 hover:border-[#4693C9]/40 hover:bg-[#0f2245] hover:-translate-y-1 hover:shadow-xl hover:shadow-black/40">
       <div className="relative overflow-hidden h-44 shrink-0">
         {item.image ? (
           <img src={item.image} alt={item.title}
@@ -220,7 +238,7 @@ function VacancyCard({ item }: { item: any }) {
     : null;
 
   return (
-    <div className="group flex flex-col gap-3.5 rounded-2xl border border-white/8 bg-white/[0.04] p-5 transition duration-300 hover:border-[#4693C9]/30 hover:bg-white/8 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/30">
+    <div className="group flex flex-col gap-3.5 rounded-2xl border border-white/10 bg-[#0d1b2e] p-5 transition duration-300 hover:border-[#4693C9]/40 hover:bg-[#0f2245] hover:-translate-y-1 hover:shadow-xl hover:shadow-black/40">
       <div>
         <h3 className="text-sm font-bold text-white line-clamp-2 leading-snug">{item.title}</h3>
         <div className="mt-2 flex flex-wrap gap-1.5">
@@ -373,12 +391,8 @@ export default function WelcomePage() {
           ? "bg-[#060f1e]/95 backdrop-blur-xl border-b border-white/8 shadow-xl shadow-black/30"
           : "bg-transparent border-b border-transparent"}`}>
         <div className="flex items-center gap-3">
-          <div className={`flex h-9 w-9 items-center justify-center rounded-xl shadow-lg transition-all duration-500 ${scrolled ? "bg-white" : "bg-white/90"}`}>
-            <Building2 size={18} className="text-[#1D437F]" />
-          </div>
-          <div className={`hidden sm:block transition-all duration-500 ${scrolled ? "opacity-100" : "opacity-85"}`}>
-            <p className="text-sm font-bold text-white leading-none">Rammis Bank</p>
-            <p className="text-[10px] text-white/45 tracking-widest uppercase">Internal Portal</p>
+          <div className={`h-10 w-auto overflow-hidden rounded-xl shadow-lg transition-all duration-500 ${scrolled ? "bg-white/95" : "bg-white/90"}`}>
+            <img src="/logo.png" alt="Rammis Bank" className="h-full w-auto object-contain" />
           </div>
         </div>
         <Link href="/login"
@@ -400,7 +414,9 @@ export default function WelcomePage() {
       )}
 
       {/* ── Content sections — appear on scroll ── */}
+      {/* Step 5: pattern-dark sits absolutely inside this wrapper */}
       <div className="relative bg-[#060f1e]">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 pattern-dark" />
 
         {/* Subtle top separator */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4693C9]/30 to-transparent" />
@@ -410,7 +426,7 @@ export default function WelcomePage() {
           {/* ── News ── */}
           {(loading || news.length > 0) && (
             <AnimatedSection>
-              <SectionLabel icon={Newspaper} label="Latest News & Announcements" accent="#4693C9" />
+              <SectionLabel icon={Newspaper} label="Latest News & Announcements" accent="#a9d1ee" />
               {loading ? (
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {Array.from({ length: 3 }).map((_, i) => (
@@ -434,7 +450,7 @@ export default function WelcomePage() {
           {/* ── Vacancies ── */}
           {(loading || vacancies.length > 0) && (
             <AnimatedSection delay={80}>
-              <SectionLabel icon={Briefcase} label="Open Vacancies" accent="#635E28" />
+              <SectionLabel icon={Briefcase} label="Open Vacancies" accent="#cec453" />
               {loading ? (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {Array.from({ length: 3 }).map((_, i) => (
@@ -456,7 +472,7 @@ export default function WelcomePage() {
           {/* ── Documents ── */}
           {(loading || documents.length > 0) && (
             <AnimatedSection delay={120}>
-              <SectionLabel icon={FileText} label="Public Documents" accent="#9F2E41" />
+              <SectionLabel icon={FileText} label="Public Documents" accent="#e9435e" />
               {loading ? (
                 <div className="space-y-2">
                   {Array.from({ length: 4 }).map((_, i) => (
@@ -464,7 +480,7 @@ export default function WelcomePage() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-2xl overflow-hidden divide-y divide-white/5 border border-white/8">
+                <div className="rounded-2xl overflow-hidden divide-y divide-white/8 border border-white/10 bg-[#0d1b2e]">
                   {documents.map((doc, i) => (
                     <div key={doc.id}
                       className="flex items-center gap-4 px-5 py-4 transition hover:bg-white/4 group"
@@ -524,14 +540,14 @@ export default function WelcomePage() {
         <footer className="border-t border-white/5 px-6 py-7 sm:px-12">
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 sm:flex-row">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#1D437F]">
-                <Building2 size={14} className="text-white" />
+              <div className="h-10 w-auto overflow-hidden rounded-lg bg-white">
+                <img src="/logo.png" alt="Rammis Bank" className="h-full w-auto object-contain" />
               </div>
-              <p className="text-xs text-white/25">
+              <p className="text-xs text-white">
                 © {new Date().getFullYear()} Rammis Bank — Internal Portal
               </p>
             </div>
-            <p className="text-xs text-white/15">
+            <p className="text-xs text-white">
               Authorised access only. All activity is monitored and logged.
             </p>
           </div>

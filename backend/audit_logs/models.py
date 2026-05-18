@@ -8,6 +8,8 @@ class AuditLog(models.Model):
         ("create", "Create"),
         ("update", "Update"),
         ("delete", "Delete"),
+        ("view", "View"),
+        ("download", "Download"),
     ]
 
     user = models.ForeignKey(

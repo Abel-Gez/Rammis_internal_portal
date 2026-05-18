@@ -83,10 +83,38 @@ body {
   background: #ffffff;
   border-radius: 16px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  /* Stronger shadow so cards clearly lift above the pattern background */
+  box-shadow: 0 2px 12px rgba(29,67,127,0.10), 0 1px 3px rgba(0,0,0,0.08);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
+  /* Ensure the white background is always opaque — pattern never bleeds through */
+  isolation: isolate;
 }
 .card:hover {
-  box-shadow: 0 8px 24px rgba(29,67,127,0.1);
+  box-shadow: 0 8px 28px rgba(29,67,127,0.15);
   transform: translateY(-1px);
+}
+
+/*
+  Islamic geometric background pattern — two variants using the uploaded pattern.png.
+  The PNG has an RGBA transparent background so pattern lines sit over any colour.
+
+  .pattern-light  → used on the light portal pages (white/grey background)
+  .pattern-dark   → used on dark backgrounds (login panel, public page)
+                    A brightness filter makes the grey lines appear white/light.
+*/
+.pattern-light {
+  background-image: url('/pattern.png');
+  background-repeat: repeat;
+  background-size: 500px 500px;
+  background-position: center top;
+  opacity: 1;
+}
+
+.pattern-dark {
+  background-image: url('/pattern.png');
+  background-repeat: repeat;
+  background-size: 500px 500px;
+  background-position: center top;
+  opacity: 0.25;
+  filter: brightness(0) invert(1);
 }

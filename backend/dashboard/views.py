@@ -14,11 +14,13 @@ class DashboardOverviewView(VisibilityQuerysetMixin, APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-
-        reports_qs = self.filter_by_visibility(Report.objects.all())
-        documents_qs = self.filter_by_visibility(Document.objects.all())
-        news_qs = self.filter_by_visibility(News.objects.all())
-        vacancies_qs = Vacancy.objects.filter(archived=False)
+        # filter(archived=False) excludes soft-deleted items so counts match
+        # exactly what each module page shows. Also apply visibility so users
+        # only see counts for content they have permission to access.
+        reports_qs   = self.filter_by_visibility(Report.objects.filter(archived=False))
+        documents_qs = self.filter_by_visibility(Document.objects.filter(archived=False))
+        news_qs      = self.filter_by_visibility(News.objects.filter(archived=False))
+        vacancies_qs = self.filter_by_visibility(Vacancy.objects.filter(archived=False))
 
         data = {
             "totals": {

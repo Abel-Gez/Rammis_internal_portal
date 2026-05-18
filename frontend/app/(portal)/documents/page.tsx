@@ -76,8 +76,9 @@ export default function DocumentsPage() {
   const fileInputRef                = useRef<HTMLInputElement>(null);
 
   // modals
-  const [previewUrl, setPreviewUrl]     = useState<string | null>(null);
-  const [previewTitle, setPreviewTitle] = useState("");
+  const [previewUrl, setPreviewUrl]         = useState<string | null>(null);  // inline URL
+  const [previewDownloadUrl, setPreviewDownloadUrl] = useState<string | null>(null); // force-download URL
+  const [previewTitle, setPreviewTitle]     = useState("");
   const [confirmId, setConfirmId]       = useState<number | null>(null);
   const [deleting, setDeleting]         = useState(false);
 
@@ -283,7 +284,10 @@ export default function DocumentsPage() {
               ) : (
                 documents.map((doc) => {
                   const { Icon, color, bg } = getFileIcon(doc.title, doc.document_type);
-                  const downloadUrl = `http://127.0.0.1:8000/api/files/download/documents/${doc.id}/`;
+                  // Use the Next.js proxy route — avoids IPv4/IPv6 mismatches
+                  // and keeps the iframe on the same origin as the app.
+                  const previewSrc = `/api/file/documents/${doc.id}?inline=true`;
+                  const downloadHref = `/api/file/documents/${doc.id}`;
                   return (
                     <tr key={doc.id} className="group transition hover:bg-slate-50/70">
                       <td className="px-5 py-3.5">
@@ -300,16 +304,16 @@ export default function DocumentsPage() {
                       </td>
                       <td className="px-5 py-3.5">
                         <div className="flex items-center justify-end gap-1.5">
-                          <button onClick={() => { setPreviewUrl(downloadUrl); setPreviewTitle(doc.title); }}
+                          {/* Preview — serves inline so PDF/image renders in the iframe */}
+                          <button onClick={() => { setPreviewUrl(previewSrc); setPreviewDownloadUrl(downloadHref); setPreviewTitle(doc.title); }}
                             className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition hover:border-[#4693C9]/40 hover:text-[#1D437F]">
                             <Eye size={12} /> Preview
                           </button>
-                          {hasPermission(user, "documents.view") && (
-                            <a href={downloadUrl} target="_blank" rel="noreferrer"
-                              className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition hover:border-[#4693C9]/40 hover:text-[#1D437F]">
-                              <Download size={12} /> Download
-                            </a>
-                          )}
+                          {/* Download — visible to every user who can access this page */}
+                          <a href={downloadHref} target="_blank" rel="noreferrer"
+                            className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition hover:border-[#4693C9]/40 hover:text-[#1D437F]">
+                            <Download size={12} /> Download
+                          </a>
                           {hasPermission(user, "documents.delete") && (
                             <button onClick={() => setConfirmId(doc.id)}
                               className="flex items-center gap-1.5 rounded-lg border border-transparent bg-transparent px-2.5 py-1.5 text-xs font-medium text-slate-400 transition hover:border-[#9F2E41]/20 hover:bg-[#9F2E41]/5 hover:text-[#9F2E41]">
@@ -357,11 +361,11 @@ export default function DocumentsPage() {
                     <span className="truncate text-sm font-semibold text-white">{previewTitle}</span>
                   </div>
                   <div className="flex items-center gap-2 shrink-0 ml-4">
-                    <a href={previewUrl} target="_blank" rel="noreferrer"
+                    <a href={previewDownloadUrl ?? "#"} target="_blank" rel="noreferrer"
                       className="flex items-center gap-1.5 rounded-lg bg-white/15 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/25">
                       <Download size={12} /> Download
                     </a>
-                    <button onClick={() => { setPreviewUrl(null); setPreviewTitle(""); }}
+                    <button onClick={() => { setPreviewUrl(null); setPreviewDownloadUrl(null); setPreviewTitle(""); }}
                       className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-white/70 transition hover:bg-white/20 hover:text-white">
                       <X size={15} />
                     </button>

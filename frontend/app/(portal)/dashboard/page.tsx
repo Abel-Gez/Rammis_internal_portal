@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import QuickLinks from "@/components/ui/QuickLinks";
 import useAuthGuard from "@/hooks/useAuthGuard";
 import useDashboard from "@/hooks/useDashboard";
@@ -158,10 +159,10 @@ export default function DashboardPage() {
           <div className="flex-1 h-px bg-slate-200" />
         </div>
         <div className="grid gap-4 lg:grid-cols-2">
-          <ContentList title="Latest Reports"   items={latest_reports}   accent="#1D437F" />
-          <ContentList title="Latest Documents" items={latest_documents} accent="#4693C9" />
-          <ContentList title="Latest News"      items={latest_news}      accent="#635E28" />
-          <ContentList title="Active Vacancies" items={active_vacancies} accent="#9F2E41" />
+          <ContentList title="Latest Reports"   items={latest_reports}   accent="#1D437F" href="/reports" />
+          <ContentList title="Latest Documents" items={latest_documents} accent="#4693C9" href="/documents" />
+          <ContentList title="Latest News"      items={latest_news}      accent="#635E28" href="/news" />
+          <ContentList title="Active Vacancies" items={active_vacancies} accent="#9F2E41" href="/vacancies" />
         </div>
       </section>
 
@@ -349,39 +350,55 @@ function StatCard({ label, value, icon: Icon, gradient, light, delay }: {
   );
 }
 
-function ContentList({ title, items, accent }: {
-  title: string; items: any[]; accent: string;
+function ContentList({ title, items, accent, href }: {
+  title: string; items: any[]; accent: string; href: string;
 }) {
   return (
     <div className="card flex flex-col p-0 overflow-hidden">
+      {/* Header — clicking "View all" navigates to the module page */}
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100"
         style={{ borderLeftColor: accent, borderLeftWidth: 3 }}>
         <h3 className="text-sm font-bold text-slate-800">{title}</h3>
-        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
-          style={{ backgroundColor: `${accent}14`, color: accent }}>
-          {items.length} item{items.length !== 1 && "s"}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+            style={{ backgroundColor: `${accent}14`, color: accent }}>
+            {items.length} item{items.length !== 1 && "s"}
+          </span>
+          <Link href={href}
+            className="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition hover:opacity-80"
+            style={{ color: accent }}>
+            View all <ArrowRight size={10} />
+          </Link>
+        </div>
       </div>
+
+      {/* Item rows — each row is a link to the module list page */}
       <ul className="flex-1 divide-y divide-slate-50 px-2 py-1">
         {items.length === 0 ? (
           <li className="px-3 py-4 text-xs text-slate-400 text-center">No data available yet.</li>
         ) : (
           items.map((item) => (
-            <li key={item.id}
-              className="group flex items-center justify-between rounded-lg px-3 py-2.5 transition hover:bg-slate-50">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: accent }} />
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-slate-700">{item.title}</p>
-                  {item.created_at && (
-                    <p className="text-[11px] text-slate-400">{new Date(item.created_at).toLocaleDateString()}</p>
-                  )}
+            <li key={item.id}>
+              <Link href={href}
+                className="group flex items-center justify-between rounded-lg px-3 py-2.5 transition hover:bg-slate-50">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: accent }} />
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium text-slate-700 group-hover:font-semibold transition-all">
+                      {item.title}
+                    </p>
+                    {(item.created_at || item.published_date) && (
+                      <p className="text-[11px] text-slate-400">
+                        {new Date(item.created_at ?? item.published_date).toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <span className="ml-3 flex shrink-0 items-center gap-0.5 text-[11px] font-medium opacity-0 transition group-hover:opacity-100"
-                style={{ color: accent }}>
-                View <ArrowRight size={10} />
-              </span>
+                <span className="ml-3 flex shrink-0 items-center gap-0.5 text-[11px] font-semibold opacity-0 transition group-hover:opacity-100"
+                  style={{ color: accent }}>
+                  View <ArrowRight size={10} />
+                </span>
+              </Link>
             </li>
           ))
         )}

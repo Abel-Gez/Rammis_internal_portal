@@ -33,15 +33,18 @@ class BaseContentViewSet(VisibilityQuerysetMixin, viewsets.ModelViewSet):
         )
 
     def perform_destroy(self, instance):
-        instance.archived = True
-        instance.save()
-
+        # Log first — save the id before the row is removed from the DB
+        object_id = instance.id
         log_action(
             user=self.request.user,
             module_name=self.module_name,
-            object_id=instance.id,
+            object_id=object_id,
             action="delete"
         )
+        # Hard delete: permanently removes the record from the database.
+        # Previously this used soft-delete (archived=True) but that caused
+        # dashboard counts to include deleted items.
+        instance.delete()
 
     def perform_update(self, serializer):
         # Pass visibility_level and department explicitly so custom serializer
